@@ -1,4 +1,32 @@
-// Helper function to switch between screens
+let activeNavTarget = 'welcome-screen';
+let totalScore = 0;
+let crosswalkCompleted = false;
+let signMatchCorrect = 0;
+let safetyKitCorrect = 0;
+let draggedCard = null;
+ 
+function clearDraggedCard() {
+  if (draggedCard) {
+    draggedCard.classList.remove('dragging');
+  }
+  draggedCard = null;
+}
+
+const levelMeta = {
+  crosswalk: {
+    name: 'Qua đường an toàn',
+    feedback: 'Giữ và kéo nhân vật băng qua vạch kẻ đúng quy định để ghi điểm.'
+  },
+  'sign-match': {
+    name: 'Nhớ biển báo',
+    feedback: 'Kéo thả biểu tượng biển báo vào mô tả tương ứng. Mỗi lần chính xác sẽ nhận 10 điểm.'
+  },
+  'safety-kit': {
+    name: 'Trang bị an toàn',
+    feedback: 'Chọn đúng 3 vật dụng cần thiết trước khi khởi hành để cộng điểm.'
+  }
+};
+
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(screen => {
     screen.classList.remove('active');
@@ -7,21 +35,90 @@ function showScreen(id) {
   if (target) {
     target.classList.add('active');
   }
+  setActiveNav(id);
 }
 
-// Initialize event listeners after DOM content is loaded
+function setActiveNav(targetId) {
+  document.querySelectorAll('.nav-link').forEach(link => {
+    if (link.dataset.target === targetId) {
+      link.classList.add('active');
+      activeNavTarget = targetId;
+    } else {
+      link.classList.remove('active');
+    }
+  });
+}
+
+function updateScore(points) {
+  if (points <= 0) return;
+  totalScore += points;
+  const scoreEl = document.getElementById('game-score');
+  if (scoreEl) {
+    scoreEl.textContent = totalScore;
+  }
+}
+
+function setFeedback(message) {
+  const banner = document.getElementById('game-feedback');
+  if (banner) {
+    banner.textContent = message;
+  }
+}
+
+function setLevelMeta(gameId) {
+  const meta = levelMeta[gameId];
+  const levelNameEl = document.getElementById('level-name');
+  if (levelNameEl && meta) {
+    levelNameEl.textContent = meta.name;
+  }
+  if (meta) {
+    setFeedback(meta.feedback);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  // Navigation for top links
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      const target = link.dataset.target;
+      if (!target) return;
+      showScreen(target);
+      if (target === 'game-screen') {
+        activateGame('crosswalk');
+      }
+      if (target === 'quiz-screen') {
+        startQuiz();
+      }
+    });
+  });
+
+  const heroPlay = document.getElementById('cta-play');
+  if (heroPlay) {
+    heroPlay.addEventListener('click', () => {
+      showScreen('game-screen');
+      activateGame('crosswalk');
+    });
+  }
+
+  const heroQuiz = document.getElementById('cta-quiz');
+  if (heroQuiz) {
+    heroQuiz.addEventListener('click', () => {
+      showScreen('quiz-screen');
+      startQuiz();
+    });
+  }
+
   // Navigation for home cards
   document.getElementById('play-card').addEventListener('click', () => {
-    resetGame();
     showScreen('game-screen');
+    activateGame('crosswalk');
   });
   document.getElementById('chat-card').addEventListener('click', () => {
     showScreen('chat-screen');
   });
   document.getElementById('quiz-card').addEventListener('click', () => {
-    startQuiz();
     showScreen('quiz-screen');
+    startQuiz();
   });
 
   // Auth buttons
@@ -67,29 +164,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  const viewRankingBtn = document.getElementById('view-ranking-btn');
+  if (viewRankingBtn) {
+    viewRankingBtn.addEventListener('click', () => {
+      showScreen('ranking-screen');
+    });
+  }
+
+  initGameTabs();
+  initCrosswalkGame();
+  setupSignMatchGame();
+  setupSafetyKitGame();
+
   // Game continue button
   document.getElementById('continue-btn').addEventListener('click', () => {
     document.getElementById('game-message').classList.add('hidden');
-    resetGame();
+    resetCrosswalkGame();
   });
 
-  initDragGame();
+  startQuiz();
 });
 
-// Reset game position and hide message
-function resetGame() {
+function initGameTabs() {
+  document.querySelectorAll('.game-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const gameId = tab.dataset.game;
+      activateGame(gameId);
+    });
+  });
+}
+
+function activateGame(gameId) {
+  if (!gameId) return;
+  document.querySelectorAll('.game-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.dataset.game === gameId);
+  });
+  document.querySelectorAll('.game-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === `${gameId}-game`);
+  });
+  setLevelMeta(gameId);
+  if (gameId === 'crosswalk') {
+    resetCrosswalkGame();
+  }
+}
+
+function resetCrosswalkGame() {
   const character = document.getElementById('character');
-  // Reset character position
-  character.style.left = '80px';
-  character.style.top = '120px';
+  if (!character) return;
+  character.style.left = '90px';
+  character.style.top = '140px';
+  crosswalkCompleted = false;
   document.getElementById('game-message').classList.add('hidden');
 }
 
-// Initialize drag events for the character
-function initDragGame() {
+function initCrosswalkGame() {
   const character = document.getElementById('character');
   const playground = document.getElementById('playground');
   const crosswalk = document.getElementById('crosswalk');
+  if (!character || !playground || !crosswalk) return;
+
   let dragging = false;
   let offsetX = 0;
   let offsetY = 0;
@@ -108,11 +241,10 @@ function initDragGame() {
     const containerRect = playground.getBoundingClientRect();
     let x = e.clientX - containerRect.left - offsetX;
     let y = e.clientY - containerRect.top - offsetY;
-    // Boundaries
     x = Math.max(0, Math.min(x, containerRect.width - character.offsetWidth));
     y = Math.max(0, Math.min(y, containerRect.height - character.offsetHeight));
-    character.style.left = x + 'px';
-    character.style.top = y + 'px';
+    character.style.left = `${x}px`;
+    character.style.top = `${y}px`;
   });
 
   character.addEventListener('pointerup', e => {
@@ -120,19 +252,166 @@ function initDragGame() {
     dragging = false;
     character.classList.remove('dragging');
     character.releasePointerCapture(e.pointerId);
-    // Check if character center is inside crosswalk
-    const charRect = character.getBoundingClientRect();
-    const charCenterX = charRect.left + charRect.width / 2;
-    const charCenterY = charRect.top + charRect.height / 2;
-    const crossRect = crosswalk.getBoundingClientRect();
-    const msgBox = document.getElementById('game-message');
-    const msgText = document.getElementById('game-msg-text');
-    if (charCenterY > crossRect.top && charCenterY < crossRect.bottom) {
-      msgText.innerText = 'Bạn đã đi đúng nơi quy định! Tuyệt vời!';
-    } else {
-      msgText.innerText = 'Bạn đã phạm luật! Bạn phải đóng phạt 150.000 VND do không đi đúng phần đường quy định.';
+    evaluateCrosswalk();
+  });
+}
+
+function evaluateCrosswalk() {
+  if (crosswalkCompleted) return;
+  const character = document.getElementById('character');
+  const crosswalk = document.getElementById('crosswalk');
+  const msgBox = document.getElementById('game-message');
+  const msgText = document.getElementById('game-msg-text');
+  if (!character || !crosswalk || !msgBox || !msgText) return;
+
+  const charRect = character.getBoundingClientRect();
+  const crossRect = crosswalk.getBoundingClientRect();
+  const charCenterY = charRect.top + charRect.height / 2;
+
+  if (charCenterY > crossRect.top && charCenterY < crossRect.bottom) {
+    msgText.innerText = 'Tuyệt vời! Bạn đã băng qua đúng nơi quy định và nhận 10 điểm thưởng.';
+    updateScore(10);
+    setFeedback('Bạn đã vượt qua cấp độ qua đường an toàn! +10 điểm');
+  } else {
+    msgText.innerText = 'Ôi! Bạn đã đi sai vạch qua đường và bị nhắc nhở. Hãy thử lại nhé.';
+    setFeedback('Hãy đưa nhân vật đứng đúng trên vạch qua đường để an toàn.');
+  }
+  crosswalkCompleted = true;
+  msgBox.classList.remove('hidden');
+}
+
+function setupSignMatchGame() {
+  initDragSources('#sign-bank .draggable-card');
+  document.querySelectorAll('#sign-match-game .drop-zone').forEach(zone => {
+    zone.addEventListener('dragover', e => {
+      e.preventDefault();
+    });
+    zone.addEventListener('dragenter', e => {
+      e.preventDefault();
+      zone.classList.add('drag-over');
+    });
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('drag-over');
+    });
+    zone.addEventListener('drop', () => {
+      zone.classList.remove('drag-over');
+      if (!draggedCard) return;
+      if (zone.classList.contains('filled')) {
+        setFeedback('Bạn đã hoàn thành mô tả này rồi. Hãy chọn ô khác nhé!');
+        clearDraggedCard();
+        return;
+      }
+      const expected = zone.dataset.target;
+      const actual = draggedCard.dataset.sign;
+      if (expected === actual) {
+        zone.classList.remove('error');
+        zone.classList.add('filled');
+        const placeholder = zone.querySelector('.drop-placeholder');
+        if (placeholder) {
+          placeholder.textContent = 'Chính xác!';
+        }
+        const summary = document.createElement('div');
+        summary.className = 'dropped-item';
+        summary.textContent = draggedCard.textContent;
+        zone.appendChild(summary);
+        draggedCard.remove();
+        signMatchCorrect++;
+        updateScore(10);
+        setFeedback('Bạn đã ghép đúng biển báo! +10 điểm');
+        updateSignStatus();
+      } else {
+        zone.classList.add('error');
+        setFeedback('Sai rồi! Hãy đọc kỹ mô tả biển báo trước khi thả.');
+        setTimeout(() => zone.classList.remove('error'), 1200);
+      }
+      clearDraggedCard();
+    });
+  });
+}
+
+function updateSignStatus() {
+  const status = document.getElementById('sign-status');
+  if (status) {
+    status.textContent = `Đã ghép đúng: ${signMatchCorrect}/3`;
+  }
+  if (signMatchCorrect === 3) {
+    setFeedback('Bạn đã ghi nhớ 3 biển báo quan trọng! Tiếp tục nào.');
+  }
+}
+
+function setupSafetyKitGame() {
+  initDragSources('#safety-bank .draggable-card');
+  const dropZone = document.querySelector('#safety-kit-game .drop-zone');
+  if (!dropZone) return;
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+  });
+  dropZone.addEventListener('dragenter', e => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('drag-over');
+  });
+  dropZone.addEventListener('drop', () => {
+    dropZone.classList.remove('drag-over');
+    if (!draggedCard) return;
+    if (draggedCard.dataset.item && dropZone.querySelector(`[data-item='${draggedCard.dataset.item}']`)) {
+      setFeedback('Vật dụng này đã nằm trong balo rồi!');
+      clearDraggedCard();
+      return;
     }
-    msgBox.classList.remove('hidden');
+    const isCorrect = draggedCard.dataset.correct === 'true';
+    if (!isCorrect) {
+      dropZone.classList.add('error');
+      setFeedback('Vật dụng này không an toàn khi tham gia giao thông. Hãy chọn thứ khác.');
+      setTimeout(() => dropZone.classList.remove('error'), 1200);
+      clearDraggedCard();
+      return;
+    }
+    if (safetyKitCorrect >= 3) {
+      setFeedback('Bạn đã chuẩn bị đủ đồ cần thiết rồi!');
+      clearDraggedCard();
+      return;
+    }
+    const placeholder = dropZone.querySelector('.drop-placeholder');
+    if (placeholder) {
+      placeholder.textContent = 'Tiếp tục chọn vật dụng an toàn!';
+    }
+    const summary = document.createElement('div');
+    summary.className = 'dropped-item';
+    summary.dataset.item = draggedCard.dataset.item;
+    summary.textContent = draggedCard.textContent;
+    dropZone.appendChild(summary);
+    draggedCard.remove();
+    safetyKitCorrect++;
+    updateScore(10);
+    updateSafetyStatus();
+    setFeedback('Chuẩn bị đồ bảo hộ chính xác! +10 điểm');
+    clearDraggedCard();
+  });
+}
+
+function updateSafetyStatus() {
+  const status = document.getElementById('safety-status');
+  if (status) {
+    status.textContent = `Đồ an toàn đã sẵn sàng: ${safetyKitCorrect}/3`;
+  }
+  if (safetyKitCorrect === 3) {
+    setFeedback('Tuyệt! Bạn đã có đủ 3 vật dụng an toàn cho chuyến đi.');
+  }
+}
+
+function initDragSources(selector) {
+  document.querySelectorAll(selector).forEach(card => {
+    card.addEventListener('dragstart', e => {
+      draggedCard = card;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => card.classList.add('dragging'), 0);
+    });
+    card.addEventListener('dragend', () => {
+      clearDraggedCard();
+    });
   });
 }
 
@@ -198,7 +477,10 @@ function startQuiz() {
   currentIndex = 0;
   correctCount = 0;
   startTime = new Date();
-  document.getElementById('next-question-btn').style.display = 'none';
+  const nextBtn = document.getElementById('next-question-btn');
+  if (nextBtn) {
+    nextBtn.style.display = 'none';
+  }
   showQuestion();
 }
 
@@ -222,7 +504,6 @@ function selectOption(e) {
   const selectedBtn = e.target;
   const selectedIndex = parseInt(selectedBtn.dataset.index);
   const q = questions[currentIndex];
-  // Mark all options as selected to disable them
   document.querySelectorAll('#quiz-options .quiz-option').forEach(btn => {
     btn.classList.add('selected');
     btn.disabled = true;
@@ -232,7 +513,6 @@ function selectOption(e) {
     correctCount++;
   } else {
     selectedBtn.classList.add('incorrect');
-    // highlight correct one
     const correctBtn = document.querySelector(`#quiz-options .quiz-option[data-index='${q.correct}']`);
     if (correctBtn) correctBtn.classList.add('correct');
   }
@@ -254,24 +534,12 @@ function finishQuiz() {
   showScreen('result-screen');
 }
 
-// Ranking button handler
-document.addEventListener('DOMContentLoaded', () => {
-  const viewRankingBtn = document.getElementById('view-ranking-btn');
-  if (viewRankingBtn) {
-    viewRankingBtn.addEventListener('click', () => {
-      showScreen('ranking-screen');
-    });
-  }
-});
-
-// Chat assistant implementation
 function sendMessage() {
   const input = document.getElementById('chat-input');
   const msg = input.value.trim();
   if (!msg) return;
   addMessage(msg, 'user');
   input.value = '';
-  // Simulate AI reply
   setTimeout(() => {
     const reply = generateReply(msg);
     addMessage(reply, 'ai');
@@ -284,14 +552,13 @@ function addMessage(text, role) {
   msgDiv.className = `message ${role}`;
   msgDiv.innerText = text;
   box.appendChild(msgDiv);
-  // scroll to bottom
   box.scrollTop = box.scrollHeight;
 }
 
 function generateReply(message) {
   const content = message.toLowerCase();
   if (content.includes('ma túy') || content.includes('ma tuy')) {
-    return 'Sử dụng, tàng trữ, mua bán ma túy là hành vi vi phạm pháp luật nghiêm trọng và có thể bị xử lý hình sự. Bạn nên tránh xa ma túy để bảo vệ sức khỏe và tương lai của mình.';
+    return 'Sử dụng, tàng trữ, mua bán ma túy là hành vi vi phạm pháp luật nghiêm trọng và có thể bị xử lý hình sự. Hãy tránh xa ma túy để bảo vệ sức khỏe và tương lai của mình.';
   }
   if (content.includes('bạo lực') || content.includes('bao luc') || content.includes('đánh nhau')) {
     return 'Hành vi bạo lực học đường vi phạm đạo đức và pháp luật. Người vi phạm có thể bị xử phạt hành chính, bồi thường thiệt hại hoặc xử lý hình sự tùy theo mức độ.';
