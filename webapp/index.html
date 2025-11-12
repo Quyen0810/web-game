@@ -7,117 +7,268 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
+  <div class="background-ornaments">
+    <span class="bubble bubble-1"></span>
+    <span class="bubble bubble-2"></span>
+    <span class="bubble bubble-3"></span>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🚦</span>
+      <div class="brand-text">
+        <h1>Right Law For Life</h1>
+        <p>Chơi vui – Nhớ luật!</p>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <button class="nav-link active" data-target="welcome-screen">Trang chủ</button>
+      <button class="nav-link" data-target="game-screen">Mini Game</button>
+      <button class="nav-link" data-target="quiz-screen">Thi nhanh</button>
+      <button class="nav-link" data-target="chat-screen">Chat AI</button>
+    </nav>
+  </header>
+
+  <main id="app">
     <!-- Welcome / Home screen -->
     <div id="welcome-screen" class="screen active">
-      <h1>Right Law For Life</h1>
-      <p class="tagline">Vui học luật – Sống chuẩn từng ngày!</p>
-      <div class="card-container">
-        <div class="card" id="play-card">
+      <section class="hero">
+        <div class="hero-copy">
+          <h2>Vui học luật – Sống chuẩn từng ngày!</h2>
+          <p>
+            Hóa thân thành công dân văn minh, vượt qua các thử thách giao thông, trò chuyện với trợ lý AI và kiểm tra kiến
+            thức luật giao thông Việt Nam ngay trên trình duyệt.
+          </p>
+          <div class="hero-actions">
+            <button id="cta-play" class="btn btn-primary">Bắt đầu học qua game</button>
+            <button id="cta-quiz" class="btn btn-outline">Thi thử ngay</button>
+          </div>
+        </div>
+        <div class="hero-illustration">
+          <div class="stat-card">
+            <span class="stat-icon">🏆</span>
+            <div>
+              <strong>Top cao thủ</strong>
+              <p>Luật Sư Gấu Bông – 100 điểm</p>
+            </div>
+          </div>
+          <div class="floating-card">
+            <h3>Hôm nay học gì?</h3>
+            <ul>
+              <li>Quy tắc qua đường an toàn</li>
+              <li>Ghi nhớ biển báo quan trọng</li>
+              <li>Chuẩn bị đầy đủ đồ bảo hộ</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card-showcase">
+        <article class="card" id="play-card">
           <div class="icon">🎮</div>
           <h3>Chơi mà học</h3>
-        </div>
-        <div class="card" id="chat-card">
+          <p>Mini game tương tác giúp nhớ luật giao thông dễ dàng hơn.</p>
+        </article>
+        <article class="card" id="chat-card">
           <div class="icon">🤖</div>
           <h3>Trò chuyện với trợ lý AI</h3>
-        </div>
-        <div class="card" id="quiz-card">
+          <p>Hỏi mọi điều về luật giao thông Việt Nam.</p>
+        </article>
+        <article class="card" id="quiz-card">
           <div class="icon">⚖️</div>
           <h3>Thử thách hiểu luật</h3>
-        </div>
-      </div>
+          <p>Bài trắc nghiệm nhanh giúp bạn củng cố kiến thức.</p>
+        </article>
+      </section>
+
       <div class="auth-buttons">
-        <button id="login-btn" class="btn">Đăng nhập</button>
+        <button id="login-btn" class="btn btn-primary">Đăng nhập</button>
         <button id="register-btn" class="btn btn-secondary">Đăng ký</button>
       </div>
     </div>
 
     <!-- Login screen -->
     <div id="login-screen" class="screen">
-      <button class="back-btn btn">Quay lại</button>
-      <h2>Đăng nhập</h2>
-      <form id="login-form" class="auth-form">
-        <input type="text" id="login-username" placeholder="Tên tài khoản" required>
-        <input type="password" id="login-password" placeholder="Mật khẩu" required>
-        <button type="submit" class="btn">Đăng nhập</button>
-      </form>
+      <button class="back-btn btn btn-light">Quay lại</button>
+      <div class="auth-panel">
+        <h2>Đăng nhập</h2>
+        <form id="login-form" class="auth-form">
+          <input type="text" id="login-username" placeholder="Tên tài khoản" required>
+          <input type="password" id="login-password" placeholder="Mật khẩu" required>
+          <button type="submit" class="btn btn-primary">Đăng nhập</button>
+        </form>
+      </div>
     </div>
 
     <!-- Register screen -->
     <div id="register-screen" class="screen">
-      <button class="back-btn btn">Quay lại</button>
-      <h2>Đăng ký tài khoản</h2>
-      <form id="register-form" class="auth-form">
-        <input type="email" id="reg-email" placeholder="Email" required>
-        <input type="text" id="reg-fullname" placeholder="Họ và tên" required>
-        <input type="text" id="reg-username" placeholder="Tên tài khoản" required>
-        <input type="password" id="reg-password" placeholder="Mật khẩu" required>
-        <input type="password" id="reg-confirm" placeholder="Nhập lại mật khẩu" required>
-        <button type="submit" class="btn">Tạo tài khoản</button>
-      </form>
+      <button class="back-btn btn btn-light">Quay lại</button>
+      <div class="auth-panel">
+        <h2>Đăng ký tài khoản</h2>
+        <form id="register-form" class="auth-form">
+          <input type="email" id="reg-email" placeholder="Email" required>
+          <input type="text" id="reg-fullname" placeholder="Họ và tên" required>
+          <input type="text" id="reg-username" placeholder="Tên tài khoản" required>
+          <input type="password" id="reg-password" placeholder="Mật khẩu" required>
+          <input type="password" id="reg-confirm" placeholder="Nhập lại mật khẩu" required>
+          <button type="submit" class="btn btn-primary">Tạo tài khoản</button>
+        </form>
+      </div>
     </div>
 
     <!-- Game screen -->
     <div id="game-screen" class="screen">
-      <button class="back-btn btn">Quay lại</button>
-      <h2>Cấp độ 1: Qua đường an toàn</h2>
-      <div class="game-area">
-        <div class="traffic-light">
-          <div class="light red"></div>
-          <div class="light yellow"></div>
-          <div class="light green"></div>
+      <button class="back-btn btn btn-light">Quay lại</button>
+      <div class="game-shell">
+        <div class="game-header">
+          <div>
+            <h2>Học luật giao thông qua trò chơi</h2>
+            <p>Hoàn thành các nhiệm vụ để tích điểm và trở thành công dân gương mẫu.</p>
+          </div>
+          <div class="game-progress">
+            <div>Cấp độ: <strong id="level-name">Qua đường an toàn</strong></div>
+            <div>Điểm số: <strong id="game-score">0</strong></div>
+          </div>
         </div>
-        <div id="playground">
-          <div id="crosswalk"></div>
-          <img id="character" src="assets/blue_character.png" alt="Nhân vật">
+
+        <div class="game-tabs" role="tablist">
+          <button class="game-tab active" data-game="crosswalk" role="tab">Qua đường an toàn</button>
+          <button class="game-tab" data-game="sign-match" role="tab">Nhớ biển báo</button>
+          <button class="game-tab" data-game="safety-kit" role="tab">Trang bị an toàn</button>
         </div>
-      </div>
-      <div id="game-message" class="hidden">
-        <p id="game-msg-text"></p>
-        <button id="continue-btn" class="btn">Tiếp tục</button>
+
+        <div class="game-panels">
+          <section id="crosswalk-game" class="game-panel active" role="tabpanel">
+            <div class="panel-info">
+              <h3>Hướng dẫn</h3>
+              <p>Giữ và kéo nhân vật sang phần vạch kẻ qua đường. Chỉ khi đứng đúng vạch, bạn mới an toàn.</p>
+            </div>
+            <div class="game-area">
+              <div class="traffic-light">
+                <div class="light red"></div>
+                <div class="light yellow"></div>
+                <div class="light green"></div>
+              </div>
+              <div id="playground">
+                <div id="crosswalk"></div>
+                <img id="character" src="assets/blue_character.png" alt="Nhân vật">
+              </div>
+              <div id="crosswalk-tip" class="mini-tip">Đèn đỏ đang bật – hãy chờ đến khi đèn xanh mới băng qua!</div>
+            </div>
+            <div id="game-message" class="modal hidden" role="alertdialog" aria-live="assertive">
+              <div class="modal-body">
+                <h3>Kết quả</h3>
+                <p id="game-msg-text"></p>
+                <button id="continue-btn" class="btn btn-primary">Thử lại</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="sign-match-game" class="game-panel" role="tabpanel">
+            <div class="panel-info">
+              <h3>Phân loại biển báo</h3>
+              <p>Kéo mỗi biển báo thả vào mô tả đúng. Bạn sẽ ghi điểm khi ghép chính xác.</p>
+            </div>
+            <div class="drag-drop-layout">
+              <div class="drag-bank" id="sign-bank">
+                <div class="draggable-card" draggable="true" data-sign="crosswalk">🚸 Vạch qua đường</div>
+                <div class="draggable-card" draggable="true" data-sign="no-horn">📢❌ Cấm còi</div>
+                <div class="draggable-card" draggable="true" data-sign="speed-40">🏎️40</div>
+              </div>
+              <div class="drop-zone-column">
+                <div class="drop-zone" data-target="speed-40">
+                  <p class="drop-label">Biển báo yêu cầu không vượt quá 40 km/h.</p>
+                  <span class="drop-placeholder">Thả biển phù hợp</span>
+                </div>
+                <div class="drop-zone" data-target="crosswalk">
+                  <p class="drop-label">Biển báo nhắc người lái xe nhường đường cho người đi bộ.</p>
+                  <span class="drop-placeholder">Thả biển phù hợp</span>
+                </div>
+                <div class="drop-zone" data-target="no-horn">
+                  <p class="drop-label">Biển báo khu vực yên tĩnh, cấm bấm còi.</p>
+                  <span class="drop-placeholder">Thả biển phù hợp</span>
+                </div>
+              </div>
+            </div>
+            <div class="game-status" id="sign-status">Đã ghép đúng: 0/3</div>
+          </section>
+
+          <section id="safety-kit-game" class="game-panel" role="tabpanel">
+            <div class="panel-info">
+              <h3>Chuẩn bị cho hành trình</h3>
+              <p>Kéo những vật dụng cần thiết vào balo an toàn trước khi tham gia giao thông.</p>
+            </div>
+            <div class="drag-drop-layout">
+              <div class="drag-bank" id="safety-bank">
+                <div class="draggable-card" draggable="true" data-item="helmet" data-correct="true">🪖 Mũ bảo hiểm đạt chuẩn</div>
+                <div class="draggable-card" draggable="true" data-item="reflective" data-correct="true">🦺 Áo phản quang</div>
+                <div class="draggable-card" draggable="true" data-item="license" data-correct="true">🪪 Giấy tờ xe &amp; GPLX</div>
+                <div class="draggable-card" draggable="true" data-item="phone" data-correct="false">📱 Điện thoại để chơi game</div>
+                <div class="draggable-card" draggable="true" data-item="headphone" data-correct="false">🎧 Tai nghe bật max âm lượng</div>
+              </div>
+              <div class="drop-zone-column">
+                <div class="drop-zone backpack" data-target="kit">
+                  <p class="drop-label">Balo an toàn</p>
+                  <span class="drop-placeholder">Thả 3 vật dụng cần thiết</span>
+                </div>
+              </div>
+            </div>
+            <div class="game-status" id="safety-status">Đồ an toàn đã sẵn sàng: 0/3</div>
+          </section>
+        </div>
+
+        <div class="feedback-banner" id="game-feedback">Chọn một mini game để bắt đầu nhé!</div>
       </div>
     </div>
 
     <!-- Quiz screens -->
     <div id="quiz-screen" class="screen">
-      <button class="back-btn btn">Quay lại</button>
-      <div id="quiz-container">
+      <button class="back-btn btn btn-light">Quay lại</button>
+      <div id="quiz-container" class="card-surface">
         <h2 id="quiz-question">Câu hỏi</h2>
         <div id="quiz-options"></div>
-        <button id="next-question-btn" class="btn" style="display:none;">Câu tiếp theo</button>
+        <button id="next-question-btn" class="btn btn-primary" style="display:none;">Câu tiếp theo</button>
       </div>
     </div>
+
     <div id="result-screen" class="screen">
       <h2>Chúc mừng!</h2>
       <p id="quiz-result"></p>
-      <button id="view-ranking-btn" class="btn">Xem xếp hạng</button>
-      <button class="back-btn btn">Quay lại</button>
+      <button id="view-ranking-btn" class="btn btn-primary">Xem xếp hạng</button>
+      <button class="back-btn btn btn-light">Quay lại</button>
     </div>
 
     <!-- Chat screen -->
     <div id="chat-screen" class="screen">
-      <button class="back-btn btn">Quay lại</button>
+      <button class="back-btn btn btn-light">Quay lại</button>
       <h2>Trò chuyện với trợ lý AI</h2>
       <div id="chat-box" class="chat-box"></div>
       <div class="chat-input-area">
         <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
-        <button id="send-btn" class="btn">Gửi</button>
+        <button id="send-btn" class="btn btn-primary">Gửi</button>
       </div>
     </div>
 
     <!-- Ranking screen -->
     <div id="ranking-screen" class="screen">
-      <button class="back-btn btn">Quay lại</button>
-      <h2>Bảng xếp hạng</h2>
-      <ol id="ranking-list">
-        <li>Luật Sư Gấu Bông – 100 điểm</li>
-        <li>Hiểu Luật Hơn Crush – 98 điểm</li>
-        <li>Master Hiểu Luật – 95 điểm</li>
-        <li>Luật Gia Level 99 – 90 điểm</li>
-        <li>Đại Sứ Công Lý – 88 điểm</li>
-      </ol>
+      <button class="back-btn btn btn-light">Quay lại</button>
+      <div class="card-surface">
+        <h2>Bảng xếp hạng</h2>
+        <ol id="ranking-list">
+          <li>Luật Sư Gấu Bông – 100 điểm</li>
+          <li>Hiểu Luật Hơn Crush – 98 điểm</li>
+          <li>Master Hiểu Luật – 95 điểm</li>
+          <li>Luật Gia Level 99 – 90 điểm</li>
+          <li>Đại Sứ Công Lý – 88 điểm</li>
+        </ol>
+      </div>
     </div>
-  </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2024 Right Law For Life – Kiến tạo thói quen tham gia giao thông văn minh.</p>
+  </footer>
+
   <script src="script.js"></script>
 </body>
 </html>
