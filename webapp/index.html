@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Right Law For Life</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Welcome / Home screen -->
+    <div id="welcome-screen" class="screen active">
+      <h1>Right Law For Life</h1>
+      <p class="tagline">Vui học luật – Sống chuẩn từng ngày!</p>
+      <div class="card-container">
+        <div class="card" id="play-card">
+          <div class="icon">🎮</div>
+          <h3>Chơi mà học</h3>
+        </div>
+        <div class="card" id="chat-card">
+          <div class="icon">🤖</div>
+          <h3>Trò chuyện với trợ lý AI</h3>
+        </div>
+        <div class="card" id="quiz-card">
+          <div class="icon">⚖️</div>
+          <h3>Thử thách hiểu luật</h3>
+        </div>
+      </div>
+      <div class="auth-buttons">
+        <button id="login-btn" class="btn">Đăng nhập</button>
+        <button id="register-btn" class="btn btn-secondary">Đăng ký</button>
+      </div>
+    </div>
+
+    <!-- Login screen -->
+    <div id="login-screen" class="screen">
+      <button class="back-btn btn">Quay lại</button>
+      <h2>Đăng nhập</h2>
+      <form id="login-form" class="auth-form">
+        <input type="text" id="login-username" placeholder="Tên tài khoản" required>
+        <input type="password" id="login-password" placeholder="Mật khẩu" required>
+        <button type="submit" class="btn">Đăng nhập</button>
+      </form>
+    </div>
+
+    <!-- Register screen -->
+    <div id="register-screen" class="screen">
+      <button class="back-btn btn">Quay lại</button>
+      <h2>Đăng ký tài khoản</h2>
+      <form id="register-form" class="auth-form">
+        <input type="email" id="reg-email" placeholder="Email" required>
+        <input type="text" id="reg-fullname" placeholder="Họ và tên" required>
+        <input type="text" id="reg-username" placeholder="Tên tài khoản" required>
+        <input type="password" id="reg-password" placeholder="Mật khẩu" required>
+        <input type="password" id="reg-confirm" placeholder="Nhập lại mật khẩu" required>
+        <button type="submit" class="btn">Tạo tài khoản</button>
+      </form>
+    </div>
+
+    <!-- Game screen -->
+    <div id="game-screen" class="screen">
+      <button class="back-btn btn">Quay lại</button>
+      <h2>Cấp độ 1: Qua đường an toàn</h2>
+      <div class="game-area">
+        <div class="traffic-light">
+          <div class="light red"></div>
+          <div class="light yellow"></div>
+          <div class="light green"></div>
+        </div>
+        <div id="playground">
+          <div id="crosswalk"></div>
+          <img id="character" src="assets/blue_character.png" alt="Nhân vật">
+        </div>
+      </div>
+      <div id="game-message" class="hidden">
+        <p id="game-msg-text"></p>
+        <button id="continue-btn" class="btn">Tiếp tục</button>
+      </div>
+    </div>
+
+    <!-- Quiz screens -->
+    <div id="quiz-screen" class="screen">
+      <button class="back-btn btn">Quay lại</button>
+      <div id="quiz-container">
+        <h2 id="quiz-question">Câu hỏi</h2>
+        <div id="quiz-options"></div>
+        <button id="next-question-btn" class="btn" style="display:none;">Câu tiếp theo</button>
+      </div>
+    </div>
+    <div id="result-screen" class="screen">
+      <h2>Chúc mừng!</h2>
+      <p id="quiz-result"></p>
+      <button id="view-ranking-btn" class="btn">Xem xếp hạng</button>
+      <button class="back-btn btn">Quay lại</button>
+    </div>
+
+    <!-- Chat screen -->
+    <div id="chat-screen" class="screen">
+      <button class="back-btn btn">Quay lại</button>
+      <h2>Trò chuyện với trợ lý AI</h2>
+      <div id="chat-box" class="chat-box"></div>
+      <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Nhập tin nhắn..." autocomplete="off">
+        <button id="send-btn" class="btn">Gửi</button>
+      </div>
+    </div>
+
+    <!-- Ranking screen -->
+    <div id="ranking-screen" class="screen">
+      <button class="back-btn btn">Quay lại</button>
+      <h2>Bảng xếp hạng</h2>
+      <ol id="ranking-list">
+        <li>Luật Sư Gấu Bông – 100 điểm</li>
+        <li>Hiểu Luật Hơn Crush – 98 điểm</li>
+        <li>Master Hiểu Luật – 95 điểm</li>
+        <li>Luật Gia Level 99 – 90 điểm</li>
+        <li>Đại Sứ Công Lý – 88 điểm</li>
+      </ol>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
